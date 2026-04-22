@@ -8,9 +8,11 @@ A Flutter-based food ordering application where users can customize their thali,
 - 🍽️ Custom Thali (Veg & Non-Veg)
 - 📍 Location & Map Integration
 - 🛒 Order Placement
-- 👤 User Profile
+- 👤 User Profile Management
 - 🔐 Authentication (Login/Signup)
 - 📦 Order History
+- 🎨 Modern & Clean UI Design
+- 📱 Fully Responsive (works on different screen sizes)
 
 ---
 
