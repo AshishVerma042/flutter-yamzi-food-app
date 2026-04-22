@@ -22,14 +22,9 @@ A Flutter-based food ordering application where users can customize their thali,
 
 ---
 
-## 📸 Screenshots
-(Add screenshots here)
-
----
-
 ## ⚙️ Installation
 bash
-- git clone https://github.com/your-username/yamzi-thali-app.git
+- git clone https://github.com/your-username/flutter-yamzi-food-app.git
 - cd yamzi-thali-app
 - flutter pub get
 - flutter run
