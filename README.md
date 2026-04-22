@@ -16,6 +16,10 @@ A Flutter-based food ordering application where users can customize their thali,
 
 ---
 ## 📸 App Screenshots
+### 📱 App Icon
+<p align="center">
+  <img src="App Screenshots/App icon.jpeg" width="120"/>
+</p>
 
 ### 🔐 Authentication
 <p align="center">
