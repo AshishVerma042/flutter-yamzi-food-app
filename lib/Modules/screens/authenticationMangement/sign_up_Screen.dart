@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:yamzi/resources/colors.dart';
 import 'package:yamzi/resources/strings.dart';
 import 'package:yamzi/utils/sized_box_extension.dart';
-import '../../utils/firebase_auth.dart';
+import '../../../utils/firebase_auth.dart';
 import 'login_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -56,9 +56,7 @@ class SignUpScreen extends StatelessWidget {
                 icon: Icons.lock_outline,
                 obscure: true,
               ),
-
               30.kH,
-
               Obx(() => authC.isLoading.value
                   ?  CircularProgressIndicator(color: Color(0xFFFF5722))
                   : Column(

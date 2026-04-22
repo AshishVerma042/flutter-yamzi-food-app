@@ -1,12 +1,56 @@
+import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import '../controllers/orderController.dart';
 
 class HomeController extends GetxController {
+  RxBool isLoading = true.obs;
+  RxBool veg = false.obs;
+  RxBool nonVeg = false.obs;
+  var isSpecialSelected = false.obs;
   final OrderController orderController = Get.put(OrderController());
-
   var selectedCategoryIndex = 0.obs;
 
   final List<String> categories = ['All', 'Vegetarian', 'Non-Vegetarian','Special Thali'];
+
+  var currentAddress = "".obs;
+
+  Future<void> requestLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+      return;
+    }
+
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      getCurrentLocation();
+    }
+  }
+
+  Future<void> getCurrentLocation() async {
+    try {
+      Position pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      List<Placemark> places =
+      await placemarkFromCoordinates(pos.latitude, pos.longitude);
+
+      Placemark place = places.first;
+
+      currentAddress.value =
+      "${place.name},${place.subLocality}, ${place.locality}, ${place.administrativeArea},${place.country}, ${place.postalCode}";
+    } catch (e) {
+      currentAddress.value = "Unable to get location";
+    }
+  }
 
   final Map<String, List<Map<String, dynamic>>> thaliItems = {
     'All': [
@@ -645,7 +689,7 @@ class HomeController extends GetxController {
       },
       {
         'id': 'nonveg_016',
-        'name': 'Dhaba Style Chicken Thali',
+        'name': 'Dhaba Chicken Thali',
         'price': 225,
         'image': 'assets/images/nonVeg (16).jpg',
         'description':
@@ -1034,7 +1078,7 @@ class HomeController extends GetxController {
       },
       {
         'id': 'nonveg_002',
-        'name': 'Chicken Tikka Masala Thali',
+        'name': 'Chicken Masala Thali',
         'price': 250,
         'image': 'assets/images/nonVeg (2).jpg',
         'description': 'Marinated and grilled chicken in aromatic tomato gravy',
@@ -1339,4 +1383,49 @@ class HomeController extends GetxController {
         'preparationTime': '15 mins',
       },]
   };
+
+  final List<Map<String, dynamic>> discounts = [
+    {
+      "title": "Flat 20% OFF",
+      "subtitle": "On all Veg Thali",
+      "color": Colors.green,
+      "image": 'assets/images/veg (2).jpg',
+      "icon": Icons.eco_outlined,
+    },
+    {
+      "title": "Buy 1 Get 1",
+      "subtitle": "Special Thali Today",
+      "color": Colors.orange,
+      "image": 'assets/images/veg (1).jpg',
+      "icon": Icons.star_rate_rounded,
+    },
+    {
+      "title": "₹50 Cashback",
+      "subtitle": "On first order",
+      "color": Colors.red,
+      "image": 'assets/images/veg (3).jpg',
+      "icon": Icons.wallet_giftcard_outlined,
+    },
+  ];
+
+
+
+
+  @override
+  void onInit() {
+    super.onInit();
+    startLoading();
+    requestLocationPermission();   // 🔥 auto popup when screen loads
+
+  }
+
+
+  void startLoading() {
+    isLoading.value = true;
+    Future.delayed(Duration(milliseconds: 1500), () {
+      isLoading.value = false;
+    });
+  }
+
+
 }

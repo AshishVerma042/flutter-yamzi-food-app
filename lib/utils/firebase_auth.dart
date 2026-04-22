@@ -1,26 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  var isLoading = false.obs;
 
-  // ✅ Email sign-in
+  var isLoading = false.obs;
+  var verificationId = "".obs; // store verificationId
+  var isOTPSent = false.obs;
+
+  // EMAIL LOGIN
   Future<void> signIn(String email, String password) async {
     try {
       isLoading(true);
       await auth.signInWithEmailAndPassword(email: email, password: password);
       goToHome();
     } catch (e) {
-      Get.snackbar('Login Failed', "Invalid email or password. Please try again.",backgroundColor: Colors.red.shade50);
+      Get.snackbar('Login Failed', "Invalid email or password.");
     } finally {
       isLoading(false);
     }
   }
 
-  // ✅ Email sign-up
+  // EMAIL SIGNUP
   Future<void> signUp(String email, String password) async {
     try {
       isLoading(true);
@@ -33,18 +35,17 @@ class AuthController extends GetxController {
     }
   }
 
-  // ✅ Google Sign-In (for google_sign_in ^6.2.1)
+  // GOOGLE LOGIN
   Future<void> signInWithGoogle() async {
     try {
       isLoading(true);
-
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
         isLoading(false);
-        return; // User cancelled
+        return;
       }
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final googleAuth = await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
@@ -54,7 +55,26 @@ class AuthController extends GetxController {
       await auth.signInWithCredential(credential);
       goToHome();
     } catch (e) {
-      Get.snackbar('Google Sign-In Failed', e.toString());
+      Get.snackbar("Google Login Failed", e.toString());
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  // 🔢 VERIFY OTP
+  Future<void> verifyOTP(String otp) async {
+    try {
+      isLoading(true);
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId.value,
+        smsCode: otp,
+      );
+
+      await auth.signInWithCredential(credential);
+      goToHome();
+
+    } catch (e) {
+      Get.snackbar("Invalid OTP", "Please enter correct OTP");
     } finally {
       isLoading(false);
     }

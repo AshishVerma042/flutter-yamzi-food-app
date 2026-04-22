@@ -1,25 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yamzi/common/common_widgets.dart';
+import 'package:lottie/lottie.dart';
+import 'package:yamzi/Modules/screens/customThaliManagement/Customization_Thali.dart';
 import 'package:yamzi/main.dart';
+import 'package:yamzi/resources/colors.dart';
 import 'package:yamzi/resources/strings.dart';
 import 'package:yamzi/utils/sized_box_extension.dart';
-import '../controllers/orderController.dart';
+import '../../controllers/orderController.dart';
 
 class OrderScreen extends ParentWidget {
-  final OrderController orderController = Get.find<OrderController>();
+  final OrderController orderController = Get.put(OrderController());
 
   @override
   Widget buildingView(BuildContext context, double h, double w) {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      appBar: commonAppBar( appStrings.myOrders ),
+      appBar:  appBar(appStrings.cart),
       body: Obx(() {
         if (orderController.orders.isEmpty) {
-          return  Center(
-            child: Text(
-              appStrings.noOrdersYet,
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+          return  SizedBox(height: h*0.7,
+            child: Center(
+              child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                Lottie.asset(
+                "assets/lottie/Shoppp.json",
+                width: 150,
+                height: 150,
+                fit: BoxFit.contain,
+              ),
+                  Text(
+                    appStrings.noOrdersYet,
+                    style: TextStyle(fontSize: 24, color: Colors.grey),
+                  ),
+                  GestureDetector(
+                    child: Container(decoration: BoxDecoration(color: Colors.orange),
+                      child: Text("Explore more",),
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         }
@@ -27,14 +46,14 @@ class OrderScreen extends ParentWidget {
         orderController.calculateTotal();
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 90, top: 10,left: 12,right: 12),
+          padding:  EdgeInsets.only( top: 10,left: 12,right: 12),
           child: SingleChildScrollView(
             child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListView.builder(padding: EdgeInsets.only(bottom: 40),
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics:  NeverScrollableScrollPhysics(),
                   itemCount: orderController.orders.length,
                   itemBuilder: (context, index) {
                     final order = orderController.orders[index];
@@ -99,89 +118,87 @@ class OrderScreen extends ParentWidget {
                             ],
                           ),
                           6.kH,
-
-                      (isCustomized)?
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListView.builder(
-                                  padding: EdgeInsets.symmetric(vertical: 0),
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: (order['items'] as List).length,
-                                  itemBuilder: (context, i) {
-                                    final item =
-                                    (order['items'] as List)[i];
-                                    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          '${item['name']} x ${item['quantity']} ',
-                                          style: const TextStyle(fontSize: 13),
-                                        ),Text(
-                                          ' ₹${item['total']}',
-                                          style: const TextStyle(fontSize: 13),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                ),
-                                8.kH,
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                          Obx(()=> AnimatedSize(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: ClipRect(
+                                child: orderController.expandedCards[index]
+                                    ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      '${appStrings.totalRs}${(order['totalPrice'] * quantity).toStringAsFixed(2)}',
-                                      style:  TextStyle(
-                                        color: Colors.orange,
-                                        fontWeight: FontWeight.bold,
+                                    8.kH,
+
+                                    if (isCustomized)
+                                      ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: (order['items'] as List).length,
+                                        itemBuilder: (context, i) {
+                                          final item = order['items'][i];
+                                          return Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                "${item['name']} x ${item['quantity']}",
+                                                style: TextStyle(fontSize: 13),
+                                              ),
+                                              Text(
+                                                "₹${item['total']}",
+                                                style: TextStyle(fontSize: 13),
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () =>
-                                          orderController.removeItem(index),
-                                      child: Text(
-                                        appStrings.remove,
-                                        style: TextStyle(
-                                          color: Colors.grey.shade600,
-                                          fontSize: 13,
-                                        ),
+
+                                    if (isCustomized== false)
+                                      ListView.builder(
+                                        padding: EdgeInsets.zero,
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: order['includes'].length,
+                                        itemBuilder: (context, i) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(bottom: 4),
+                                            child: Text(
+                                              "${order['includes'][i]}",
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    ),
+
+                                    10.kH,
                                   ],
-                                ),
-                              ],
-                            ):
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${appStrings.totalRs}${(order['price'] * quantity).toStringAsFixed(2)}',
-                                  style:  TextStyle(
-                                    color: Colors.orange,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () =>
-                                      orderController.removeItem(index),
-                                  child: Text(
-                                    appStrings.remove,
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                )
+                                    : SizedBox.shrink(),
+                              ),
                             ),
+                          ),
+
+                          Obx(()=> GestureDetector(
+                              onTap: () => orderController.toggleExpand(index),
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 6),
+                                child: Text(
+                                  orderController.expandedCards[index]
+                                      ? "Hide Details"
+                                      : "View Details",
+                                  style: TextStyle(
+                                    color: appColors.textMuted,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 10.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     );
                   },
                 ),
-                8.kH,
                 Text(
                   appStrings.youMayAlsoLike,
                   style:  TextStyle(
@@ -189,8 +206,6 @@ class OrderScreen extends ParentWidget {
                     fontSize: 18,
                   ),
                 ),
-                8.kH,
-
                 SizedBox(
                   height: 130,
                   child: ListView(
@@ -203,13 +218,43 @@ class OrderScreen extends ParentWidget {
                     ],
                   ),
                 ),
-                20.kH,
                 orderSummary(orderController)
               ],
             ),
           ),
         );
       }),
+      bottomNavigationBar: Obx(
+            () => Container(
+          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6,
+                offset: Offset(0, -2),
+              ),
+            ],
+          ),
+          child: ElevatedButton(
+            onPressed: orderController.orders.isEmpty ? null : () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 16),
+              elevation: 0,
+            ),
+            child: Text(
+              "Continue to Payment  ₹${orderController.totalPrice.value.toStringAsFixed(2)}",
+              style: TextStyle(fontSize: 17, color: Colors.white,fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+      ),
+
     );
   }
 
@@ -259,12 +304,12 @@ Widget suggestionCard(String name, String price, String imagePath) {
          6.kH,
         Text(
           name,
-          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+          style:  TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
           overflow: TextOverflow.ellipsis,
         ),
         Text(
           price,
-          style: const TextStyle(color: Colors.orange, fontSize: 13),
+          style:  TextStyle(color: Colors.orange, fontSize: 13),
         ),
       ],
     ),
@@ -284,7 +329,7 @@ Widget orderSummary(OrderController orderController){
       ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 10),
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        physics:  NeverScrollableScrollPhysics(),
         itemCount: orderController.orders.length,
         itemBuilder: (context, index) {
           final order = orderController.orders[index];
@@ -297,7 +342,7 @@ Widget orderSummary(OrderController orderController){
 
           return Padding(
             padding:
-            const EdgeInsets.symmetric(vertical: 4),
+             EdgeInsets.symmetric(vertical: 4),
             child: Row(
               mainAxisAlignment:
               MainAxisAlignment.spaceBetween,
@@ -307,13 +352,13 @@ Widget orderSummary(OrderController orderController){
                     isCustomized
                         ? '${appStrings.customizedThali} (${order['thaliType']}) x$quantity'
                         : '${order['name']} x$quantity',
-                    style: const TextStyle(fontSize: 15),
+                    style: TextStyle(fontSize: 15),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 Text(
                   '₹${total.toStringAsFixed(2)}',
-                  style: const TextStyle(
+                  style:  TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
                   ),
@@ -326,7 +371,7 @@ Widget orderSummary(OrderController orderController){
       8.kH,
 
       Container(
-        padding: const EdgeInsets.symmetric(
+        padding:  EdgeInsets.symmetric(
             horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -346,44 +391,11 @@ Widget orderSummary(OrderController orderController){
             ),
             Text(
               "₹${orderController.totalPrice.value.toStringAsFixed(2)}",
-              style: const TextStyle(
+              style:  TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
             ),
           ],
-        ),
-      ),
-      10.kH,
-
-      GestureDetector(
-        onTap: () {
-
-        },
-        child: Container(
-          padding:
-          const EdgeInsets.symmetric(vertical: 18),
-          decoration: BoxDecoration(
-            color: Colors.orange,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.orange.withOpacity(0.4),
-                blurRadius: 6,
-                offset:  Offset(0, 3),
-              ),
-            ],
-          ),
-          child:  Center(
-            child: Text(
-              appStrings.continueToPayment,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
         ),
       ),
     ],

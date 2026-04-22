@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yamzi/resources/strings.dart';
-import '../controllers/splashController.dart';
-import '../../main.dart';
+import '../../controllers/splashController.dart';
+import '../../../main.dart';
 
 class SplashScreen extends ParentWidget {
   const SplashScreen({super.key});

@@ -4,12 +4,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:yamzi/resources/colors.dart';
 import 'package:yamzi/routes/RoutesClass.dart';
-import 'Modules/screens/splash_screen.dart';
+import 'Modules/screens/authenticationMangement/splash_screen.dart';
 import 'firebase_options.dart';
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -17,7 +18,7 @@ void main() async {
     providerWeb: ReCaptchaV3Provider('6Lec2_krAAAAAEXgUUZckNIDRpz6vQ8nHVexw83Q'),
   );
 
-  runApp(MyApp());  
+  runApp(MyApp());
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

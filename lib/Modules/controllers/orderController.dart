@@ -1,18 +1,30 @@
 import 'package:get/get.dart';
 
 class OrderController extends GetxController {
+
   var orders = <Map<String, dynamic>>[].obs;
   var totalPrice = 0.0.obs;
 
+  RxList<bool> expandedCards = <bool>[].obs;
+
+  void initExpandedList() {
+    while (expandedCards.length < orders.length) {
+      expandedCards.add(false);
+    }
+  }
+
+
+  void toggleExpand(int index) {
+    expandedCards[index] = !expandedCards[index];
+    expandedCards.refresh();
+  }
 
 
 
   void calculateTotal() {
     double total = 0.0;
-
     for (var order in orders) {
       final quantity = order['quantity'] ?? 1;
-
       if (order['source'] == 'CustomizationScreen') {
         total += (order['totalPrice'] ?? 0) * quantity;
       } else {
@@ -32,11 +44,12 @@ class OrderController extends GetxController {
       'image': item['image'],
       'price': item['price'],
       'rating': item['rating'],
+      'includes': List<String>.from(item['includes']),
       'quantity': 1,
       'time': DateTime.now().toString(),
     };
     orders.add(newOrder);
-
+    initExpandedList();
   }
 
   void addCustomizedOrder({
@@ -54,9 +67,11 @@ class OrderController extends GetxController {
       'time': DateTime.now().toString(),
     };
     orders.add(newOrder);
+    initExpandedList();
   }
   void removeItem(int index){
     orders.removeAt(index);
+    expandedCards.removeAt(index);
   }
 
   void increaseQuantity(int index) {
@@ -70,7 +85,7 @@ class OrderController extends GetxController {
     if (orders[index]['quantity'] > 1) {
       orders[index]['quantity'] = orders[index]['quantity'] - 1;
     } else {
-      orders.removeAt(index); // remove if quantity is 0
+      orders.removeAt(index);
     }
     orders.refresh();
     calculateTotal();

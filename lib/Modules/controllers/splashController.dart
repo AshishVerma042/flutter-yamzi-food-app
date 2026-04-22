@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../routes/RoutesClass.dart';
+import '../screens/authenticationMangement/login_screen.dart';
 
 class SplashController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -34,7 +35,7 @@ class SplashController extends GetxController
     animationController.forward();
 
     Future.delayed( Duration(seconds: 3), () {
-      Get.toNamed(RoutesClass.gotoCommonScreen());
+       Get.toNamed(RoutesClass.gotohomeScreen());
     });
 
     super.onInit();

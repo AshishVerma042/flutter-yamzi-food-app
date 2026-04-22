@@ -3,10 +3,22 @@ import 'orderController.dart';
 
 class CustomizationController extends GetxController {
   final OrderController orderController = Get.put(OrderController());
-
+  var showShimmer = true.obs;
   var selectedThaliType = 'Vegetarian'.obs;
   var selectedItems = <String, int>{}.obs;
   var totalPrice = 0.0.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    triggerShimmer();
+  }
+  void triggerShimmer() {
+    showShimmer.value = true;
+    Future.delayed(Duration(seconds: 2), () {
+      showShimmer.value = false;
+    });
+  }
+
 
   final List<Map<String, dynamic>> allMenuItems = [
     {

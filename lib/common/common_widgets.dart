@@ -4,23 +4,6 @@ import '../resources/colors.dart';
 import '../resources/font.dart';
 
 
-PreferredSizeWidget commonAppBar(String title,{Color color = Colors.white}){
-  return AppBar(
-    surfaceTintColor: Colors.transparent,
-    backgroundColor: color,
-    title: Text(
-      title,
-      style: TextStyle(
-        color: appColors.primaryColor,
-        fontWeight: FontWeight.bold,
-        fontSize: 42,
-      ),
-    ),
-    automaticallyImplyLeading: false,
-
-  );
-}
-
 
 
 

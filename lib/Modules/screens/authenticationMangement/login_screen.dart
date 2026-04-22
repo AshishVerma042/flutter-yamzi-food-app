@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yamzi/Modules/screens/sign_up_Screen.dart';
+import 'package:yamzi/Modules/screens/authenticationMangement/sign_up_Screen.dart';
 import 'package:yamzi/resources/colors.dart';
 import 'package:yamzi/resources/strings.dart';
 import 'package:yamzi/utils/sized_box_extension.dart';
-import '../../utils/firebase_auth.dart';
+import '../../../utils/firebase_auth.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -115,7 +115,6 @@ class LoginScreen extends StatelessWidget {
   }
 
 }
-
 
 Widget commonTextField({
   required TextEditingController controller,
