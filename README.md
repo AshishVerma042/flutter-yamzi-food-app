@@ -1,11 +1,40 @@
-<<<<<<< HEAD
-# yamzi
+# 🍱 Yamzi - Custom Thali App
 
-A new Flutter project.
+A Flutter-based food ordering application where users can customize their thali, select location, and place orders easily.
+
+---
+
+## 🚀 Features
+- 🍽️ Custom Thali (Veg & Non-Veg)
+- 📍 Location & Map Integration
+- 🛒 Order Placement
+- 👤 User Profile
+- 🔐 Authentication (Login/Signup)
+- 📦 Order History
+
+---
+
+## 🛠️ Tech Stack
+- Flutter
+- Firebase Auth
+- Cloud Firestore
+- Google Maps API
+
+---
+
+## 📸 Screenshots
+(Add screenshots here)
+
+---
+
+## ⚙️ Installation
+bash
+- git clone https://github.com/your-username/yamzi-thali-app.git
+- cd yamzi-thali-app
+- flutter pub get
+- flutter run
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
